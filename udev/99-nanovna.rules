@@ -1,0 +1,2 @@
+SUBSYSTEM=="tty", ATTRS{idVendor}=="04b4", ATTRS{idProduct}=="0008", ATTRS{serial}=="DEMO", SYMLINK+="nanovna"
+
