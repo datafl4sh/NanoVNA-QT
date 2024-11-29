@@ -19,15 +19,16 @@ int main(int argc, char *argv[])
 
 
     QTranslator qtTranslator;
-    qtTranslator.load("qt_" + QLocale::system().name(),
-            QLibraryInfo::location(QLibraryInfo::TranslationsPath));
-    app.installTranslator(&qtTranslator);
+    if ( qtTranslator.load("qt_" + QLocale::system().name(),
+            QLibraryInfo::path(QLibraryInfo::TranslationsPath)) ) {
+        app.installTranslator(&qtTranslator);
+    }
 
     QTranslator myappTranslator;
-    myappTranslator.load("languages/vna_qt_" + QLocale::system().name());
-    fprintf(stderr, "%s\n", QLocale::system().name().toStdString().c_str());
-    app.installTranslator(&myappTranslator);
-
+    if ( myappTranslator.load("languages/vna_qt_" + QLocale::system().name()) ) {
+        fprintf(stderr, "%s\n", QLocale::system().name().toStdString().c_str());
+        app.installTranslator(&myappTranslator);
+    }
 
     MainWindow* w = new MainWindow();
     w->show();
