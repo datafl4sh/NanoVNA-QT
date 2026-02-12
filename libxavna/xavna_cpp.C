@@ -15,7 +15,7 @@ namespace xaxaxa {
 
 	VNADevice::VNADevice() {
         _cb_ = &_cb;
-        frequencyCompletedCallback2_ = [](int freqIndex, const vector<array<complex<double>, 4> >& values) {};
+        frequencyCompletedCallback2_ = [](int freqIndex, const vector<std::array<complex<double>, 4> >& values) {};
 	}
 	VNADevice::~VNADevice() {
 		
@@ -121,7 +121,7 @@ namespace xaxaxa {
 				
 				// values is indexed by excitation #, then wave #
 				// e.g. values[0][1] is wave 1 measured with excitation on port 0
-				vector<array<complex<double>, 4> > values(ports);
+				vector<std::array<complex<double>, 4> > values(ports);
 				for(int port=0; port<ports; port++) {
 					int p = swapPorts?(1-port):port;
 					if(!_noscan) {
@@ -221,7 +221,7 @@ namespace xaxaxa {
 		int cnt = 0;
 		int currValueIndex = 0;
 		vector<VNARawValue> results(nPoints);
-		vector<array<complex<double>, 4> > rawValues(1);
+		vector<std::array<complex<double>, 4> > rawValues(1);
 		rawValues[0] = {0., 0., 0., 0.};
 		
 		xavna_set_autosweep(_dev, startFreqHz, stepFreqHz, nPoints, nValues);
@@ -242,7 +242,7 @@ namespace xaxaxa {
 			// process chunk
 			for(int i=0; i<chunkValues; i++) {
 				auto& value = values[i];
-				array<complex<double>, 4> currRawValue =
+				std::array<complex<double>, 4> currRawValue =
 						{cx(value.forward[0]), cx(value.reverse[0]),
 						cx(value.forward[1]), cx(value.reverse[1])};
 

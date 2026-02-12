@@ -17,7 +17,7 @@
 using namespace std;
 using namespace xaxaxa;
 
-const vector<array<double,3> > NetworkView::defaultGraphLimits = {
+const vector<std::array<double,3> > NetworkView::defaultGraphLimits = {
     {-1000,-999, 12},
     {-80, 30, 11},      //TYPE_MAG=1
     {-180, 180, 12},    //TYPE_PHASE

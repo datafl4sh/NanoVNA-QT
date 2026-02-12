@@ -35,8 +35,8 @@ typedef Matrix<complex<double>,8,8> Matrix8cd;
 typedef Matrix<complex<double>,8,1> Vector8cd;
 
 
-template<int N> array<complex<double>, N> operator*(const array<complex<double>, N>& a, double b) {
-	array<complex<double>, N> res;
+template<int N> std::array<complex<double>, N> operator*(const std::array<complex<double>, N>& a, double b) {
+	std::array<complex<double>, N> res;
 	for(int i=0;i<N;i++)
 		res[i] = a[i]*b;
 	return res;

@@ -62,7 +62,7 @@ private:
     // list of all indices of origModels that are short, open, and load
     vector<int> calStdShortIndex, calStdOpenIndex, calStdLoadIndex;
 
-    vector<array<string, 2> > calStds;
+    vector<std::array<string, 2> > calStds;
 
     void updateModels();
     void addLengthOffset(int modelIndex, double offset);

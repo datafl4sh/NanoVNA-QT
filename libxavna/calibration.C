@@ -34,7 +34,7 @@ public:
         return "6-term two port calibration using Short, Open, Load, and zero-length thru. Removes port-to-port leakage and normalizes S21 using thru standard.";
     }
     // get a list of calibration standards required
-    vector<array<string, 2> > getRequiredStandards() const override {
+    vector<std::array<string, 2> > getRequiredStandards() const override {
         if(noThru) return {{"short1","Short"},{"open1","Open"},{"load1","Load"}};
         else return {{"short1","Short"},{"open1","Open"},{"load1","Load"},{"thru","Thru"}};
     }
@@ -133,7 +133,7 @@ public:
                     " calibration unless the thru standard is known to be poorly matched.";
     }
     // get a list of calibration standards required
-    vector<array<string, 2> > getRequiredStandards() const override {
+    vector<std::array<string, 2> > getRequiredStandards() const override {
         return {{"short1","Short (port 1)"}, {"short2","Short (port 2)"},
                 {"open1","Open (port 1)"}, {"open2","Open (port 2)"},
                 {"load1","Load (port 1)"}, {"load2","Load (port 2)"},

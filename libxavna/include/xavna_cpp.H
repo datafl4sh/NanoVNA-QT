@@ -88,7 +88,7 @@ namespace xaxaxa {
 		
 		// called by background thread after frequencyCompletedCallback(); provides signal values
         // directly from hardware
-        function<void(int freqIndex, const vector<array<complex<double>, 4> >& values)> frequencyCompletedCallback2_;
+        function<void(int freqIndex, const vector<std::array<complex<double>, 4> >& values)> frequencyCompletedCallback2_;
 		
 		
 		// internal variables

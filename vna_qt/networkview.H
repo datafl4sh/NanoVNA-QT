@@ -95,9 +95,9 @@ public:
     // user-added markers
     vector<Marker> markers;
     // min, max, and division count of the y axis of the graph, indexed by SParamViewSource::Types
-    vector<array<double,3> > graphLimits;
+    vector<std::array<double,3> > graphLimits;
 
-    static const vector<array<double,3> > defaultGraphLimits;
+    static const vector<std::array<double,3> > defaultGraphLimits;
 
 
     NetworkView();

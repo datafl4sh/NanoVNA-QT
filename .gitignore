@@ -118,3 +118,7 @@ pcb/#*#
 /ltmain.sh
 # http://www.gnu.org/software/texinfo
 /texinfo.tex
+
+# Kdevelop
+NanoVNA-QT.kdev4
+build

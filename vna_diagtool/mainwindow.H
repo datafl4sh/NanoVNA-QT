@@ -54,7 +54,7 @@ private:
     VNADevice* vna=NULL;
     int excitation=0;
 
-    vector<vector<array<complex<double>, 4> > > rawValues;
+    vector<vector<std::array<complex<double>, 4> > > rawValues;
 
 
     QChart* chart;
