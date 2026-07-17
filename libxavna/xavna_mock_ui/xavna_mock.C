@@ -283,6 +283,10 @@ public:
 	bool is_autosweep() {
 		return false;
 	}
+
+	bool supportsIFBW() {
+		return true;   // o false; da igual para el mock
+	}
 	
     int set_params(int freq_khz, int atten, int port, int nWait) {
 		if(atten == -1) atten=100;

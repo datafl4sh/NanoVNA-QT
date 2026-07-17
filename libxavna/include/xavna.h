@@ -17,6 +17,9 @@ extern "C" {
 	// Returns true if dev uses the autosweep protocol
 	bool xavna_is_autosweep(void* dev);
 
+	// Check if device supports IFBW feature
+	bool xavna_supports_ifbw(void* dev);
+
 	// Set the RF frequency and attenuation.
 	// freq_khz: frequency in kHz
 	// atten: attenuation in dB (positive integer) of signal generator

@@ -223,6 +223,8 @@ public:
 	bool autoSweep = false;
 	int _curPort = 0;
 	int _nWait = 20;
+	int hardwareRevision = 0;
+
 	xavna_default(const char* dev) {
 		fprintf(stderr, "Opening serial...\n");
 		ttyFD=xavna_open_serial(dev);
@@ -252,7 +254,7 @@ public:
 
 			int deviceVariant    = readRegister(0xF0);
 			int protocolVersion  = readRegister(0xF1);
-			int hardwareRevision = readRegister(0xF2);
+			hardwareRevision = readRegister(0xF2);
 			int firmwareMajor    = readRegister(0xF3);
 			int firmwareMinor    = readRegister(0xF4);
 
@@ -329,6 +331,9 @@ public:
 	}
 	virtual bool is_autosweep() {
 		return autoSweep;
+	}
+	bool supportsIFBW() override {
+			return hardwareRevision >= 5; // Supported by NanoRFE VNA HW revision 5 (V2 Plus4 PRO) and next NanoVNA V3 generations.(VNA6000)
 	}
 	virtual int set_params(int freq_khz, int atten, int port, int nWait) {
 		_nWait = nWait;
@@ -645,6 +650,9 @@ extern "C" {
 		xavna_generic* tmp = (xavna_generic*)dev;
 		return dynamic_cast<xavna_default*>(tmp)->read_values_raw2(out_values, n_samples);
 	}
+
+	bool xavna_supports_ifbw(void* dev){
+		return ((xavna_generic*)dev)->supportsIFBW();}
 
 	void xavna_close(void* dev) {
 		delete ((xavna_generic*)dev);

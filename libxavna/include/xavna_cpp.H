@@ -9,23 +9,14 @@
 using namespace std;
 
 namespace xaxaxa {
-	struct DeviceInfo
-	{
-    	uint8_t deviceVariant      = 0;
-    	uint8_t protocolVersion    = 0;
-    	uint8_t hardwareRevision   = 0;
-    	uint8_t firmwareMajor      = 0;
-    	uint8_t firmwareMinor      = 0;
-	};
-
 	class VNADevice {
 	public:
- 	    DeviceInfo deviceInfo;
 		
 		// frequency sweep parameters; do NOT change while background thread is running
 		double startFreqHz=200e6;	// start frequency in Hz
 		double stepFreqHz=25e6;		// step frequency in Hz
 		int nPoints=50;				// how many frequency points
+		uint8_t ifbw = 40;			// Default IFBW register value (6.2 kHz)
 		int nValues=30;	 			// how many values to average over
 		int nWait=20;				// how many values to skip after changing frequency
 		bool disableReference = false;	// if true, do not divide by reference value
@@ -94,6 +85,11 @@ namespace xaxaxa {
 			return 10;
 		}
 		
+		void setIFBW(uint8_t value);
+		uint8_t getIFBW() const;
+
+		// Returns true if the connected device supports adjustable IF bandwidth.
+		bool supportsIFBW() const;
 		
 		// diagnostics
 		

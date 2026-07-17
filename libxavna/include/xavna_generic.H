@@ -10,6 +10,7 @@ public:
 	virtual int set_autosweep(double sweepStartHz, double sweepStepHz, int sweepPoints, int nValues=1)=0;
 	virtual int set_if_freq(int freq_khz)=0;
 	virtual int setIFBW(uint8_t value)=0;
+	virtual bool supportsIFBW()=0;
 	virtual int read_values(double* out_values, int n_samples)=0;
 	virtual int read_values_raw(double* out_values, int n_samples)=0;
 	virtual int read_autosweep(autoSweepDataPoint* out_values, int n_values)=0;
