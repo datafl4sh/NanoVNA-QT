@@ -23,6 +23,9 @@ namespace xaxaxa {
 		bool forceTR = false;		// if device is full two port vna, force T/R mode
 		bool swapPorts = false;		// only supported on full two port vna
 
+		void setIFBW(uint8_t value);
+		uint8_t getIFBW() const;
+
 		// rf parameters
 		int attenuation1=25, attenuation2=25;
 		
@@ -85,9 +88,6 @@ namespace xaxaxa {
 			return 10;
 		}
 		
-		void setIFBW(uint8_t value);
-		uint8_t getIFBW() const;
-
 		// Returns true if the connected device supports adjustable IF bandwidth.
 		bool supportsIFBW() const;
 		
