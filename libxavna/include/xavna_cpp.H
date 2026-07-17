@@ -9,8 +9,19 @@
 using namespace std;
 
 namespace xaxaxa {
+	struct DeviceInfo
+	{
+    	uint8_t deviceVariant      = 0;
+    	uint8_t protocolVersion    = 0;
+    	uint8_t hardwareRevision   = 0;
+    	uint8_t firmwareMajor      = 0;
+    	uint8_t firmwareMinor      = 0;
+	};
+
 	class VNADevice {
 	public:
+ 	    DeviceInfo deviceInfo;
+		
 		// frequency sweep parameters; do NOT change while background thread is running
 		double startFreqHz=200e6;	// start frequency in Hz
 		double stepFreqHz=25e6;		// step frequency in Hz
