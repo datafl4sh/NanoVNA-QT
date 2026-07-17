@@ -255,7 +255,6 @@ public:
 			int hardwareRevision = readRegister(0xF2);
 			int firmwareMajor    = readRegister(0xF3);
 			int firmwareMinor    = readRegister(0xF4);
-			int ifbw    		 = readRegister(0x42);
 
 			// handle any possible communication  error = -1 	
 			if (deviceVariant < 0 ||
@@ -624,6 +623,10 @@ extern "C" {
 
 	int xavna_set_autosweep(void* dev, double sweepStartHz, double sweepStepHz, int sweepPoints, int nValues) {
 		return ((xavna_generic*)dev)->set_autosweep(sweepStartHz, sweepStepHz, sweepPoints, nValues);
+	}
+
+	int xavna_set_ifbw(void* dev, uint8_t value) {
+		return ((xavna_generic*)dev)->setIFBW(value);
 	}
 
 	int xavna_read_values(void* dev, double* out_values, int n_samples) {

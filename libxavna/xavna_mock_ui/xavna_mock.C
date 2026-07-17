@@ -301,6 +301,10 @@ public:
 	int set_autosweep(double sweepStartHz, double sweepStepHz, int sweepPoints, int nValues) {
 		return -1;
 	}
+	int setIFBW(uint8_t value) {
+		(void)value;      // evita warning de parámetro no usado
+		return 0;
+	}
 	int read_autosweep(autoSweepDataPoint* out_values, int n_values) {
 		return -1;
 	}
