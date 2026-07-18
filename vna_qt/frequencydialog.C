@@ -33,15 +33,27 @@ FrequencyDialog::~FrequencyDialog()
 }
 
 void FrequencyDialog::fromVNA(const VNADevice &dev) {
+    bool supported = dev.supportsIFBW();    // Hide IFBW controls on unsupported devices
+    ui->label_ifbw->setVisible(supported);
+    ui->c_ifbw->setVisible(supported);
+
     ui->t_start->setValue(dev.startFreqHz*1e-6);
     ui->t_stop->setValue(dev.startFreqHz*1e-6 + dev.stepFreqHz*1e-6 *(dev.nPoints - 1));
     ui->t_points->setValue(dev.nPoints);
     ui->slider_power->setRange(dev.maxPower()-40, dev.maxPower());
     ui->slider_power->setValue(dev.maxPower() - dev.attenuation1);
     ui->t_nValues->setText(qs(ssprintf(32, "%d", dev.nValues)));
-    ui->t_nWait->setText(qs(ssprintf(32, "%d", dev.nWait)));
-    // TODO: - initialize from current device IFBW
-    ui->c_ifbw->setCurrentIndex(5);    // Default 6.2 kHz.    
+ 
+    int idx = 5;      // Fallback = 6.2 kHz
+    for (int i = 0; i < 8; ++i) {
+        if (ifbwRegisterValue[i] == dev.ifbw) {
+            idx = i;
+            break;
+        }
+    }
+ 
+    ui->c_ifbw->setCurrentIndex(idx);
+    ui->t_nWait->setText(qs(ssprintf(32, "%d", dev.nWait)));  
     emit on_slider_power_valueChanged(ui->slider_power->value());
 }
 
