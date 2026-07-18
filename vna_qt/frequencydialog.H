@@ -23,7 +23,7 @@ public:
     void fromVNA(const VNADevice& dev);
 
     // update dev with parameters from the UI
-    // returns true if frequency parameters were changed, false otherwise
+    // Returns true if sweep parameters affecting calibration have changed, false otherwise.
     bool toVNA(VNADevice& dev);
 
     void updateLabels();

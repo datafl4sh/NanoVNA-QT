@@ -16,7 +16,7 @@ namespace xaxaxa {
 		double startFreqHz=200e6;	// start frequency in Hz
 		double stepFreqHz=25e6;		// step frequency in Hz
 		int nPoints=50;				// how many frequency points
-		uint8_t ifbw = 40;			// Default IFBW register value (6.2 kHz)
+		uint8_t ifbw = 40;			// IFBW register value (default = 6.2 kHz)
 		int nValues=30;	 			// how many values to average over
 		int nWait=20;				// how many values to skip after changing frequency
 		bool disableReference = false;	// if true, do not divide by reference value
