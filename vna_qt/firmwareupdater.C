@@ -39,7 +39,11 @@ FirmwareUpdater::~FirmwareUpdater() {
 void FirmwareUpdater::open(const char* dev) {
     ttyFD = checkError(xavna_open_serial(dev));
     char buf[64] = {};
-    write(ttyFD, buf, sizeof(buf));
+
+    // write N bytes of BUF to FD.  Return the number written, or -1.
+    if (write(ttyFD, buf, sizeof(buf)) < 0) {
+        fprintf(stderr,"ERROR: write() failed: %s\n", strerror(errno));
+    }
 
     xavna_drainfd(ttyFD);
     usleep(10000);

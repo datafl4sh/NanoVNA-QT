@@ -246,10 +246,14 @@ public:
 			tr = true;
 			fprintf(stderr, "detected autosweep T/R vna\n");
 			fflush(stderr);
-
 			char buf[64];
 			memset(buf, 0, sizeof(buf));
-			write(ttyFD, buf, sizeof(buf));
+
+			// write N bytes of BUF to FD.  Return the number written, or -1.
+			if (write(ttyFD, buf, sizeof(buf)) < 0) {
+				fprintf(stderr,"ERROR: write() failed: %s\n", strerror(errno));
+			}
+
 			usleep(10000);
 
 			int deviceVariant    = readRegister(0xF0);
