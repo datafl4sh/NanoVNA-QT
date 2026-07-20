@@ -17,6 +17,9 @@ extern "C" {
 	// Returns true if dev uses the autosweep protocol
 	bool xavna_is_autosweep(void* dev);
 
+	// Check if device supports IFBW feature
+	bool xavna_supports_ifbw(void* dev);
+
 	// Set the RF frequency and attenuation.
 	// freq_khz: frequency in kHz
 	// atten: attenuation in dB (positive integer) of signal generator
@@ -32,6 +35,35 @@ extern "C" {
 	// nValues: number of values to output for each frequency point
 	// returns: 0 if success; -1 if failure
 	int xavna_set_autosweep(void* dev, double sweepStartHz, double sweepStepHz, int sweepPoints, int nValues=1);
+
+	// Set the Intermediate Frequency Bandwidth (IFBW).
+	//
+	// Supported by newer NanoRFE devices (e.g. NanoVNA V2 Plus4 Pro and VNA6000).
+	//
+	// The firmware accepts the following discrete register values:
+	//
+	//   2, 5, 10, 20, 30, 40, 50, 60
+	//
+	// According to NanoRFE documentation:
+	//
+	//   5  -> 0.8 kHz
+	//   10 -> 1.6 kHz
+	//   20 -> 3.1 kHz
+	//   30 -> 4.7 kHz
+	//   40 -> 6.2 kHz
+	//   60 -> 10 kHz
+	//
+	// Additional values (2 and 50) were identified experimentally on
+	// NanoVNA V2 Plus4 Pro devices.
+	//
+	// NanoRFE firmware v20251215 adds a 0.3 kHz IFBW option to the
+	// stand-alone GUI, which experimentally corresponds to register value 2.
+	//
+	// Register value 50 was also observed experimentally and behaves as an
+	// additional valid IFBW setting between 6.2 kHz and 10 kHz.
+	//
+	// returns: 0 if success; -1 if failure
+	int xavna_set_ifbw(void* dev, uint8_t value);
 
 	// read vector values from device; applicable for T/R VNA only
 	// out_values: array of size 4 holding the following values (in order):

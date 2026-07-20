@@ -11,15 +11,20 @@ using namespace std;
 namespace xaxaxa {
 	class VNADevice {
 	public:
+		
 		// frequency sweep parameters; do NOT change while background thread is running
 		double startFreqHz=200e6;	// start frequency in Hz
 		double stepFreqHz=25e6;		// step frequency in Hz
 		int nPoints=50;				// how many frequency points
+		uint8_t ifbw = 40;			// IFBW register value (default = 6.2 kHz)
 		int nValues=30;	 			// how many values to average over
 		int nWait=20;				// how many values to skip after changing frequency
 		bool disableReference = false;	// if true, do not divide by reference value
 		bool forceTR = false;		// if device is full two port vna, force T/R mode
 		bool swapPorts = false;		// only supported on full two port vna
+
+		void setIFBW(uint8_t value);
+		uint8_t getIFBW() const;
 
 		// rf parameters
 		int attenuation1=25, attenuation2=25;
@@ -83,6 +88,8 @@ namespace xaxaxa {
 			return 10;
 		}
 		
+		// Returns true if the connected device supports adjustable IF bandwidth.
+		bool supportsIFBW() const;
 		
 		// diagnostics
 		

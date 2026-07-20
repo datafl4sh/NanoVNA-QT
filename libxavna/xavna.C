@@ -223,6 +223,8 @@ public:
 	bool autoSweep = false;
 	int _curPort = 0;
 	int _nWait = 20;
+	int hardwareRevision = 0;
+
 	xavna_default(const char* dev) {
 		fprintf(stderr, "Opening serial...\n");
 		ttyFD=xavna_open_serial(dev);
@@ -244,19 +246,46 @@ public:
 			tr = true;
 			fprintf(stderr, "detected autosweep T/R vna\n");
 			fflush(stderr);
-
 			char buf[64];
 			memset(buf, 0, sizeof(buf));
-			write(ttyFD, buf, sizeof(buf));
+
+			// write N bytes of BUF to FD.  Return the number written, or -1.
+			if (write(ttyFD, buf, sizeof(buf)) < 0) {
+				fprintf(stderr,"ERROR: write() failed: %s\n", strerror(errno));
+			}
+
 			usleep(10000);
 
-			int version = autosweep_read_version();
-			fprintf(stderr, "firmware major version: %d\n", version);
-			if(version == 0xff) {
-				// dfu mode
-				close(ttyFD);
-				throw logic_error("DFU mode");
+			int deviceVariant    = readRegister(0xF0);
+			int protocolVersion  = readRegister(0xF1);
+			hardwareRevision = readRegister(0xF2);
+			int firmwareMajor    = readRegister(0xF3);
+			int firmwareMinor    = readRegister(0xF4);
+
+			// handle any possible communication  error = -1 	
+			if (deviceVariant < 0 ||
+    			protocolVersion < 0 ||
+    			hardwareRevision < 0 ||
+    			firmwareMajor < 0 ||
+    			firmwareMinor < 0 )
+			{
+    			close(ttyFD);
+    			throw runtime_error("Unable to read device identification registers");
 			}
+			if(firmwareMajor == 0xff) {
+				// dfu mode	
+				close(ttyFD);
+    			throw logic_error("DFU mode");
+			}
+
+			fprintf(stderr,
+        			"Device=0x%02X  Protocol=0x%02X  HW=0x%02X  FW=%d.%d\n",
+        			deviceVariant,
+        			protocolVersion,
+        			hardwareRevision,
+        			firmwareMajor,
+        			firmwareMinor
+			);
 			return;
 		}
 
@@ -282,23 +311,33 @@ public:
 	}
 	// returns firmware major version
 	int autosweep_read_version() {
-		u8 buf[] = {
-			// read register 0xf3
-			0x10, 0xf3
-		};
-		if(writeAll(ttyFD,buf,sizeof(buf)) != (int)sizeof(buf))
-			return -1;
-
-		u8 rBuf[1];
-		if(read(ttyFD, rBuf, 1) != 1)
-			return -1;
-		return rBuf[0];
+		return readRegister(0xF3);
 	}
+	// to read any generic register defined in Protocol.
+	int readRegister(uint8_t reg) {
+	    u8 buf[] = {
+    	    0x10, reg
+    	};
+
+    	if(writeAll(ttyFD, buf, sizeof(buf)) != (int)sizeof(buf))
+        	return -1;
+
+    	u8 value;
+
+    	if(read(ttyFD, &value, 1) != 1)
+        	return -1;
+
+    	return value;
+	}
+
 	virtual bool is_tr() {
 		return tr;
 	}
 	virtual bool is_autosweep() {
 		return autoSweep;
+	}
+	bool supportsIFBW() override {
+			return hardwareRevision >= 5; // Supported by NanoRFE VNA HW revision 5 (V2 Plus4 PRO) and next NanoVNA V3 generations.(VNA6000)
 	}
 	virtual int set_params(int freq_khz, int atten, int port, int nWait) {
 		_nWait = nWait;
@@ -346,6 +385,7 @@ public:
 		
 		return 0;
 	}
+
 	virtual int set_autosweep(double sweepStartHz, double sweepStepHz, int sweepPoints, int nValues) {
 		u8 buf[] = {
 			// 0
@@ -366,6 +406,19 @@ public:
 		if(writeAll(ttyFD,buf,sizeof(buf)) != (int)sizeof(buf)) return -1;
 		return 0;
 	}
+
+	virtual int setIFBW(uint8_t value) {	// Supported values are 5, 10, 20, 30, 40, and 60, corresponding to IFBW 0.8kHz,1.6kHz,3.1kHz,4.7kHz,6.2kHz,and 10kHz.
+    	u8 cmd[] = {
+        	0x20,	// write 1-byte register
+        	0x42,	// IF bandwidth register
+        	value
+    	};
+
+    	if(writeAll(ttyFD, cmd, sizeof(cmd)) != (int)sizeof(cmd))
+        	return -1;
+    	return 0;
+	}
+
 	virtual int set_if_freq(int freq_khz) {
 		if(is_tr()) {
 			errno = ENOTSUP;
@@ -581,6 +634,10 @@ extern "C" {
 		return ((xavna_generic*)dev)->set_autosweep(sweepStartHz, sweepStepHz, sweepPoints, nValues);
 	}
 
+	int xavna_set_ifbw(void* dev, uint8_t value) {
+		return ((xavna_generic*)dev)->setIFBW(value);
+	}
+
 	int xavna_read_values(void* dev, double* out_values, int n_samples) {
 		return ((xavna_generic*)dev)->read_values(out_values, n_samples);
 	}
@@ -597,6 +654,9 @@ extern "C" {
 		xavna_generic* tmp = (xavna_generic*)dev;
 		return dynamic_cast<xavna_default*>(tmp)->read_values_raw2(out_values, n_samples);
 	}
+
+	bool xavna_supports_ifbw(void* dev){
+		return ((xavna_generic*)dev)->supportsIFBW();}
 
 	void xavna_close(void* dev) {
 		delete ((xavna_generic*)dev);

@@ -737,6 +737,9 @@ void MainWindow::on_actionSweep_params_triggered() {
             emit on_b_clear_clicked();
             emit on_b_clear_m_clicked();
         }
+        if (vna->supportsIFBW()) {
+            vna->setIFBW(vna->getIFBW());
+        }
         updateSweepParams();
         if(running) vna->startScan();
     }

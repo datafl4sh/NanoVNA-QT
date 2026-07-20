@@ -283,6 +283,10 @@ public:
 	bool is_autosweep() {
 		return false;
 	}
+
+	bool supportsIFBW() {
+		return true;   // o false; da igual para el mock
+	}
 	
     int set_params(int freq_khz, int atten, int port, int nWait) {
 		if(atten == -1) atten=100;
@@ -300,6 +304,10 @@ public:
 	}
 	int set_autosweep(double sweepStartHz, double sweepStepHz, int sweepPoints, int nValues) {
 		return -1;
+	}
+	int setIFBW(uint8_t value) {
+		(void)value;      // evita warning de parámetro no usado
+		return 0;
 	}
 	int read_autosweep(autoSweepDataPoint* out_values, int n_values) {
 		return -1;

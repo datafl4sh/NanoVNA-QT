@@ -42,6 +42,7 @@ namespace xaxaxa {
 				throw logic_error("DFU mode");
 			throw runtime_error(strerror(errno));
 		}
+		xavna_set_ifbw(_dev, ifbw);
 
 		bool a = isAutoSweep();
 		if(a != _lastDeviceIsAutosweep) {
@@ -64,6 +65,24 @@ namespace xaxaxa {
 		if(!_dev) return false;
 		return xavna_is_autosweep(_dev);
 	}
+
+	void VNADevice::setIFBW(uint8_t value) {
+		ifbw = value;
+		if (_dev)
+			xavna_set_ifbw(_dev, value);
+	}
+
+	uint8_t VNADevice::getIFBW() const {
+		return ifbw;
+	}
+
+	bool VNADevice::supportsIFBW() const {
+		if (!_dev)
+			return false;
+
+		return xavna_supports_ifbw(_dev);
+	}
+
 	bool VNADevice::isTRMode() {
 		return isTR() || forceTR;
 	}
